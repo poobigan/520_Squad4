@@ -1,4 +1,4 @@
-from src.backend.model.astar_algo import *
+from src.backend.model.AstarAlgo import *
 from src.backend.controller.controller import *
 """
    This controller implements the Astar Algorithm, which calculates the shortest path between
