@@ -133,12 +133,12 @@ def get_routes():
     data_model.set_observer_obj(view)
 
     controller = get_controller_obj(algorithm)
-    controller.set_data_model(data_model)
+    controller.set_model(data_model)
     controller.set_limiting_percent(path_limit)
     controller.set_elevation_mode(elevation_strategy)
-    controller.set_start_point(start_point)
-    controller.set_destination_point(destination_point)
-    controller.manipulate_data_model()
-    output = view.get_json_output()
+    controller.set_origin(start_point)
+    controller.set_destination(destination_point)
+    controller.modify_model()
+    output = view.fetch_json_output()
 
     return output
