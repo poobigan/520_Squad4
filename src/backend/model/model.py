@@ -1,5 +1,5 @@
 from src.util.logger_util import get_logger_statements
-from src.util.Util import coordinates_to_address
+from src.util.Util import get_address
 from src.backend.model.shortest_route_algo import ShortestRouteAlgo
 from src.backend.model.graph_constructor import GraphConstructor
 
@@ -66,8 +66,8 @@ class Model:
         if percentage_limit == 0:
             self.observer_obj.update_notifier(self.info_least_dist_route,
                                           self.info_least_dist_route,
-                                          coordinates_to_address(origin),
-                                          coordinates_to_address(destination))
+                                          get_address(origin),
+                                          get_address(destination))
             return
         self.elevation_mode = elevation_mode
         self.percentage_limit = percentage_limit / 100.0
@@ -81,5 +81,5 @@ class Model:
 
         self.observer_obj.update_notifier(self.info_least_dist_route,
                                       self.info_elevation_route,
-                                      coordinates_to_address(origin),
-                                      coordinates_to_address(destination))
+                                      get_address(origin),
+                                      get_address(destination))

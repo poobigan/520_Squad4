@@ -1,6 +1,6 @@
 from src.backend.model.path import Path
 from src.util.logger_util import get_logger_statements
-from src.util.util import fetch_path_weight
+from src.util.Util import get_path_weight
 import networkx as ntx
 import osmnx as osx
 
@@ -46,7 +46,7 @@ class ShortestRouteAlgo:
         info_least_dist_route = Path()
         info_least_dist_route.set_end_point(self.destination)
         info_least_dist_route.set_start_point(self.source)
-        info_least_dist_route.set_total_ele_gain(fetch_path_weight(self.graph, self.short_path, ELEVATION_GAIN))
+        info_least_dist_route.set_total_ele_gain(get_path_weight(self.graph, self.short_path, ELEVATION_GAIN))
         info_least_dist_route.set_total_ele_drop(0)
         info_least_dist_route.set_algo(SHORTEST)
         info_least_dist_route.set_path([[graph.nodes[route_node]['x'], graph.nodes[route_node]['y']]

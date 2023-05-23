@@ -1,0 +1,222 @@
+import unittest
+
+from src.driver import *
+from src.backend.model.shortest_route_algo import *
+# from src.backend.model.ShortestRoute import *
+# from src.model.utils import *
+from src.util.Util import *
+# from src.backend.model.graph_constructor import *
+
+
+class AlgorithmTestSuite(unittest.TestCase):
+    """
+    This test suite contains unit test cases to check the graph using small graphs which could be visualized.
+    It also analyzes the algorithms, dijkstra and star, and compares them using various values of extra path limit.
+    """
+    G = None
+
+    @classmethod
+    def setUpClass(self):
+        """
+        This is the setup method called before running the test cases once.
+        Returns:
+
+        """
+        # Creating a test graph.
+        G = nx.Graph()
+        # Adding the a few nodes
+        [G.add_node(i, elevation=0.0) for i in range(5)]
+        # Adding edge lengths
+        edge_lengths = [(0, 1, 7), (1, 2, 3.0), (0, 3, 5), (3, 4, 4.0), (4, 2, 10)]
+        # Adding edge elevations
+        edge_elevations = [(0, 1, 0.0), (1, 2, 1.0), (0, 3, 3.0), (3, 4, 1.0), (4, 2, -3.0)]
+        edge_abs_elevations = [(0, 1, 0.0), (1, 2, 1.0), (0, 3, 3.0), (3, 4, 1.0), (4, 2, 3.0)]
+        G.add_weighted_edges_from(edge_lengths)
+        G.add_weighted_edges_from(edge_elevations, weight="grade")
+        G.add_weighted_edges_from(edge_abs_elevations, weight="grade_abs")
+        elev = [0.0, 0.0, 1.0, 3.0, 4.0]
+        for i, e in enumerate(elev):
+            G.nodes[i]["elevation"] = e
+        self.G = G
+
+    def test_get_graph(self):
+        """
+        This test case checks if the graph object is properly loaded.
+        Returns:
+
+        """
+        destination = (42.389747, -72.528293)
+        # graph_obj = GraphGenerator()
+        graph_obj = GraphConstructor()
+        graph_instance = graph_obj.generate_graph_to_end_point(destination)
+        assert isinstance(graph_instance, nx.classes.multidigraph.MultiDiGraph)
+
+    def test_convert_address_to_coordinates(self):
+        """
+        This method checks the google address to coordinate api.
+        Returns:
+
+        """
+        address = "UMass Amherst"
+        x, y = get_coordinates_from_address(address)
+        assert isinstance(x, float)
+        assert isinstance(y, float)
+
+    def test_convert_coordinates_to_address(self):
+        """
+        This method checks the api to convert coordinates to human readable address
+        Returns:
+
+        """
+        location = (42.3867637, -72.5322402)
+        address = coordinates_to_address(location)
+        # address = get_address_from_coordinates(location)
+        assert 'University of Massachusetts Amherst' in address
+
+    def test_weight_function(self):
+        """
+        This method checks if the utils calculate the weight between two nodes correctly.
+        Returns:
+
+        """
+        weight = get_weight(self.G, 1, 2, "normal")
+        # weight = get_weight(self.G, 1, 2, "normal")
+        assert weight == 3.0
+
+    def test_get_path_weight(self):
+        """
+        This method checks if the utils calculate the sum of the weights on a route correctly.
+        Returns:
+
+        """
+        route = [0, 1, 2, 4]
+        # weight = fetch_path_weight(self.G, route, "normal")
+        weight = get_path_weight(self.G, route, "normal")
+        assert weight == 20.0
+
+    def test_get_path_elevation(self):
+        """
+        This method chcks if the utils calculate the sum of the elevations on a route correctly.
+        Returns:
+
+        """
+        route = [0, 1, 2, 4]
+        # weight = fetch_path_weight(self.G, route, "elevation_gain")
+        weight = get_path_weight(self.G, route, "elevation_gain")
+        assert weight == 4.0
+
+    def test_astar_shortest_path(self):
+        """
+        This test case checks if the path returned by astar has lesser elevation than the shortest path.
+        Returns:
+
+        """
+        destination = (42.3867637, -72.5322402)
+        start = (42.3978, -72.5147)
+        path_limit = 50
+        elevation_strategy = 'min'
+        controller = AstarController()
+        model = Model()
+        view = View()
+        model.set_observer_obj(view)
+        controller.set_model(model)
+        controller.set_origin(start)
+        controller.set_destination(destination)
+        controller.set_limiting_percent(path_limit)
+        controller.set_elevation_mode(elevation_strategy)
+        controller.modify_model()
+        out_json = json.loads(view.fetch_json_output())
+        shortest_path_dist = out_json['shortDist']
+        elev_path_dist = out_json['elev_path_dist']
+        shortest_path_elev = out_json['gainShort']
+        elev_path_gain = out_json['elev_path_gain']
+        assert elev_path_dist <= (1 + path_limit / 100) * shortest_path_dist
+        assert elev_path_gain <= shortest_path_elev
+
+    def test_dijkstra_shortest_path(self):
+        """
+        This method checks if the path returned by dijkstra has lesser elevation than the shortest path.
+        Returns:
+
+        """
+        destination = (42.3867637, -72.5322402)
+        start = (42.3978, -72.5147)
+        path_limit = 50
+        elevation_strategy = 'min'
+        controller = DijkstraController()
+        model = Model()
+        view = View()
+        model.set_observer_obj(view)
+        controller.set_model(model)
+        controller.set_origin(start)
+        controller.set_destination(destination)
+        controller.set_limiting_percent(path_limit)
+        controller.set_elevation_mode(elevation_strategy)
+        controller.modify_model()
+        out_json = json.loads(view.fetch_json_output())
+        shortest_path_dist = out_json['shortDist']
+        elev_path_dist = out_json['elev_path_dist']
+        shortest_path_elev = out_json['gainShort']
+        elev_path_gain = out_json['elev_path_gain']
+        assert elev_path_dist <= (1 + path_limit / 100) * shortest_path_dist
+        assert elev_path_gain <= shortest_path_elev
+
+    def test_astar_max_elevation(self):
+        """
+        This test case checks if the path returned by astar has greater elevation than the shortest path.
+        Returns:
+
+        """
+        start = (42.3867637, -72.5322402)
+        destination = (42.3978, -72.5147)
+        path_limit = 50
+        elevation_strategy = 'max'
+        controller = AstarController()
+        model = Model()
+        view = View()
+        model.set_observer_obj(view)
+        controller.set_model(model)
+        controller.set_origin(start)
+        controller.set_destination(destination)
+        controller.set_limiting_percent(path_limit)
+        controller.set_elevation_mode(elevation_strategy)
+        controller.modify_model()
+        out_json = json.loads(view.fetch_json_output())
+        shortest_path_dist = out_json['shortDist']
+        elev_path_dist = out_json['elev_path_dist']
+        shortest_path_elev = out_json['gainShort']
+        elev_path_gain = out_json['elev_path_gain']
+        assert elev_path_dist <= (1 + path_limit / 100) * shortest_path_dist
+        assert elev_path_gain >= shortest_path_elev
+
+    def test_dijkstra_max_elevation(self):
+        """
+        This method checks if the path returned by dijkstra has greater elevation than the shortest path.
+        Returns:
+
+        """
+        start = (42.3867637, -72.5322402)
+        destination = (42.3978, -72.5147)
+        path_limit = 50
+        elevation_strategy = 'max'
+        controller = DijkstraController()
+        model = Model()
+        view = View()
+        model.set_observer_obj(view)
+        controller.set_model(model)
+        controller.set_origin(start)
+        controller.set_destination(destination)
+        controller.set_limiting_percent(path_limit)
+        controller.set_elevation_mode(elevation_strategy)
+        controller.modify_model()
+        out_json = json.loads(view.fetch_json_output())
+        shortest_path_dist = out_json['shortDist']
+        elev_path_dist = out_json['elev_path_dist']
+        shortest_path_elev = out_json['gainShort']
+        elev_path_gain = out_json['elev_path_gain']
+        assert elev_path_dist <= (1 + path_limit / 100) * shortest_path_dist
+        assert elev_path_gain >= shortest_path_elev
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,6 +1,6 @@
 from src.backend.model.path import Path
 from src.util.logger_util import get_logger_statements
-from src.util.util import fetch_path_weight, astar_algorithm
+from src.util.Util import get_path_weight, astar_algorithm
 import osmnx as osx
 import networkx as ntx
 import math
@@ -59,7 +59,7 @@ class AstarAlgo:
                                                 )
 
             elevation_distance = sum(osx.utils_graph.get_route_edge_attributes(graph, elevation_path, 'length'))
-            elevation_gain_val = fetch_path_weight(self.graph, elevation_path, ELEVATION_GAIN)
+            elevation_gain_val = get_path_weight(self.graph, elevation_path, ELEVATION_GAIN)
             if elevation_gain_val * factor <= self.elevation_gain * factor and elevation_distance <= (1 + self.limiting_percent) * self.shortest_dist:
                 self.elevation_gain = elevation_gain_val
                 self.elevation_path = elevation_path
@@ -69,7 +69,7 @@ class AstarAlgo:
         shortest_path = Path()
         shortest_path.set_total_ele_drop(0)
         shortest_path.set_algo(ASTAR_ALGORITHM)
-        shortest_path.set_total_ele_gain(fetch_path_weight(self.graph, self.elevation_path, ELEVATION_GAIN))
+        shortest_path.set_total_ele_gain(get_path_weight(self.graph, self.elevation_path, ELEVATION_GAIN))
         shortest_path.set_path([[graph.nodes[route_node]['x'], graph.nodes[route_node]['y']]
                                 for route_node in self.elevation_path])
 
