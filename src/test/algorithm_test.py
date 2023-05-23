@@ -69,7 +69,7 @@ class AlgorithmTestSuite(unittest.TestCase):
 
         """
         location = (42.3867637, -72.5322402)
-        address = coordinates_to_address(location)
+        address = get_address(location)
         # address = get_address_from_coordinates(location)
         assert 'University of Massachusetts Amherst' in address
 
