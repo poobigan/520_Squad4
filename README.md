@@ -1,6 +1,7 @@
 # 520_Squad4
 # EleNA - Elevation Based Navigation System 
-
+A navigational software program that maximizes or reduces the elevation gain and keeps the total distance between the two points to x% of the length of the shortest path.
+The application allows runners and hikers to choose between simple and hard workouts based on their preferences.
 
 # Design diagram
 <img width="900" src="docs/design_doc.jpeg">
