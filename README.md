@@ -24,3 +24,7 @@ Nihar Gupta Chinta
 
 ## Project Report
 https://docs.google.com/document/d/1v31D8y-j9jdDquDFgZGJSjULomy8E7RQ5gyKRqPVgW0/edit
+
+
+# video of Final Project Presentation
+https://github.com/poobigan/520_Squad4/blob/main/docs/demo_Squad%204.mp4
