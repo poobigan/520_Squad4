@@ -19,7 +19,7 @@ FEATURE = "Feature"
 LINESTRING = "LineString"
 
 
-def astar_algorithm(graph, min_cost_heuristics, weight, origin, destination):
+def astar_algorithm(graph, origin, destination, min_cost_heuristics, weight):
     """
     This method is used to compute the least distance path between origin and destination using A-star algorithm
 

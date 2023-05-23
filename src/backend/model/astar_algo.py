@@ -49,10 +49,10 @@ class AstarAlgo:
                                                weight='length')
         while self.scale < 15000:
             elevation_path = astar_algorithm(graph,
-                                                source=self.origin,
-                                                target=self.target,
-                                                heuristic=self.dist,
-                                                weight=lambda x, y, d:
+                                                self.origin,
+                                                self.target,
+                                                self.dist,
+                                                lambda x, y, d:
                                                 math.exp(1 / self.scale * (d[0]['length'])) +
                                                 math.exp(factor * d[0]['length'] * (
                                                         d[0]['grade'] + d[0]['grade_abs']) / 2)
