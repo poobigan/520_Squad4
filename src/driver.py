@@ -4,7 +4,7 @@ import googlemaps
 from flask import Flask, request, render_template
 from src.backend.controller.astar_controller import *
 from src.backend.controller.dijkstra_controller import *
-from src.backend.model.DataModel import *
+from src.backend.model.model import *
 from src.view.View import View
 
 GMAP_API_KEY = 'AIzaSyBB07RMmFyfyUYwXUbzQDduEmBiWyBUzlc'
@@ -73,7 +73,7 @@ def get_route():
     start_point = (origin_coordinates['lat'], origin_coordinates['lng'])
     destination_point = (destination_coordinates['lat'], destination_coordinates['lng'])
 
-    data_model = DataModel()
+    data_model = Model()
     view = View()
     data_model.set_observer_obj(view)
     controller = get_controller_obj(algorithm)
@@ -128,7 +128,7 @@ def get_routes():
     path_limit = float(json_out['percentage_limit'])
     elevation_strategy = json_out['minimum_maximum']
 
-    data_model = DataModel()
+    data_model = Model()
     view = View()
     data_model.set_observer_obj(view)
 
