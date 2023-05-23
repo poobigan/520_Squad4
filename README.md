@@ -8,7 +8,7 @@ The application allows runners and hikers to choose between simple and hard work
 
 # Pre-reqs
 ### Installing the python modules for running the application
-* In the Command line interface Run : **pip install -r requirements.txt**
+* In the Command line interface Run : **pip3 install -r requirements.txt**
 * Make sure all the modules are installed properly and run the application from the root folder in the Chrome browser
 
 ### Testing the Application -
