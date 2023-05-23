@@ -1,0 +1,7 @@
+geopy~=2.1.0
+googlemaps
+haversine~=2.3.0
+networkx~=2.5.1
+numpy
+osmnx~=1.0.1
+Shapely>=1.8,<2.0
