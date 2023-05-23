@@ -1,6 +1,10 @@
 # 520_Squad4
 # EleNA - Elevation Based Navigation System 
 
+
+# Design diagram
+<img width="900" src="docs/design_doc.jpeg">
+
 # Pre-reqs
 ### Installing the python modules for running the application
 * In the Command line interface Run : **pip install -r requirements.txt**
