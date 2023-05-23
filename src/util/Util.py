@@ -93,7 +93,7 @@ def get_weight(graph, start_node, end_node, weight_type=NORMAL):
     elif weight_type == ELEVATION_GAIN:
         return max(0.0, graph.nodes[end_node][ELEVATION] - graph.nodes[start_node][ELEVATION])
 
-def get_path_weight(graph, weight, path):
+def get_path_weight(graph, path, weight):
     """
     This method is used to get the path weight
 
