@@ -6,7 +6,6 @@ from networkx.algorithms.shortest_paths.weighted import _weight_function
 
 NORMAL = "normal"
 ELEVATION_GAIN = "elevation_gain"
-SHORTEST = "Shortest Route"
 
 WEIGHT = 'weight'
 ELEVATION = 'elevation'
@@ -20,78 +19,83 @@ FEATURE = "Feature"
 LINESTRING = "LineString"
 
 
-def astar_algorithm(graph, source, target, heuristic, weight):
+def astar_algorithm(graph, min_cost_heuristics, weight, origin, destination):
     """
-    This method computes the shortest path between source and target using astar algorithm and returns the nodes in this path
+    This method is used to compute the least distance path between origin and destination using A-star algorithm
 
     Args:
         graph: NetworkX graph
-        source: Starting node in the path
-        target: Destination node in the path
-        heuristic: Provides an estimate of the minimum cost between the given nodes
+        origin: Start node in the path
+        destination: Final node in the path
+        min_cost_heuristics: Gives an estimate of the minimum cost between any two nodes
         weight: Used to pass the edge weights
 
     Returns:
-    The nodes in the shortest path between source and target
+    All nodes in the least distance path between origin and destination
     """
-    if source not in graph or target not in graph:
-        print("Graph doesn't contain either source or destination")
+    if not all(node in graph for node in [origin, destination]):
+        print("Graph does not contain either origin or destination points")
 
-    if heuristic is None:
-        def heuristic(u, v):
-            return 0
+    min_cost_heuristics = min_cost_heuristics if min_cost_heuristics is not None else lambda u, v: 0
+        
     enqueue_dict = {}
-    visited_dict = {}
+    visited_nodes_dict = {}
+
     weight = _weight_function(graph, weight)
-    c = count()
-    queue = [(0, next(c), source, 0, None)]
+    counter = count()
+    queue = [(0, next(counter), origin, 0, None)]
     while queue:
-        _, __, curr_node, distance, parent = heappop(queue)
-        if curr_node == target:
-            path = [curr_node]
-            node = parent
+        _, __, current_node, distance, parent_node = heappop(queue)
+        if current_node == destination:
+            path = [current_node]
+            node = parent_node
             while node is not None:
                 path.append(node)
-                node = visited_dict[node]
+                node = visited_nodes_dict[node]
             path = path[::-1]
             return path
-        if curr_node in visited_dict:
-            if visited_dict[curr_node] is None:
-                continue
-            queue_cost, h = enqueue_dict[curr_node]
-            if queue_cost < distance:
-                continue
-        visited_dict[curr_node] = parent
-        for neighbor, node_weight in graph[curr_node].items():
-            node_cost = distance + weight(curr_node, neighbor, node_weight)
-            if neighbor in enqueue_dict:
-                queue_cost, x = enqueue_dict[neighbor]
-                if queue_cost <= node_cost:
-                    continue
-            else:
-                x = heuristic(neighbor, target)
-            enqueue_dict[neighbor] = node_cost, x
-            node_to_push = (node_cost + x, next(c), neighbor, node_cost, curr_node)
-            heappush(queue, node_to_push)
-    raise nx.NetworkXNoPath(f"{target} node is unreachable from {source}")
+        
+        if current_node not in visited_nodes_dict or visited_nodes_dict[current_node] is not None:
+            visited_nodes_dict[current_node] = parent_node
+            for neighbor, node_weight in graph[current_node].items():
+                node_cost = distance + weight(current_node, neighbor, node_weight)
+                if neighbor in enqueue_dict:
+                    queue_cost, x = enqueue_dict[neighbor]
+                    if queue_cost <= node_cost:
+                        continue
+                else:
+                    x = min_cost_heuristics(neighbor, destination)
+                enqueue_dict[neighbor] = node_cost, x
+                node_to_push = (node_cost + x, next(counter), neighbor, node_cost, current_node)
+                heappush(queue, node_to_push)
+
+    raise nx.NetworkXNoPath(f"Cannot navigate from {origin} node to {destination} node")
 
 
-def coordinates_to_address(coordinates):
+def get_weight(graph, start_node, end_node, weight_type=NORMAL):
     """
-    This method retrieves the address from the supplied coordinates
+    This method is used to get the edge weight based on path length or elevation gain
 
     Args:
-        coordinates: latitude and longitude details
+        graph: graph object
+        start_node: start node
+        end_node: final node
+        weight_type: normal/elevation (set to NORMAL by default)
 
     Returns:
-        Address corresponding to the input coordinates
+        Edge weight of the edge connecting start and end nodes
     """
-    return Nominatim(user_agent="myGeocoder").reverse(coordinates).address
+    if weight_type == NORMAL:
+        try:
+            return graph.edges[start_node, end_node, 0][LENGTH]
+        except:
+            return graph.edges[start_node, end_node][WEIGHT]
+    elif weight_type == ELEVATION_GAIN:
+        return max(0.0, graph.nodes[end_node][ELEVATION] - graph.nodes[start_node][ELEVATION])
 
-
-def fetch_path_weight(graph, path, weight):
+def get_path_weight(graph, weight, path):
     """
-    Fetches the path weight
+    This method is used to get the path weight
 
     Args:
         graph: graph object
@@ -101,45 +105,34 @@ def fetch_path_weight(graph, path, weight):
     Returns:
         total weight computed based on the path and weight params
     """
-    total_weight = 0
-    path_length = len(path) - 1
-    for i in range(path_length):
-        total_weight += fetch_weight(graph, path[i], path[i + 1], weight)
+    total_weight = sum(get_weight(graph, path[i], path[i + 1], weight) for i in range(len(path) - 1))
     return total_weight
 
 
-def fetch_weight(graph, node_1, node_2, weight_type=NORMAL):
+def get_address(geocoordinates):
     """
-    This method calculates the edge weight based on the length or elevation gain of the path
+    This method is used to get the address from the coordinates
 
     Args:
-        graph: graph object
-        node_1: source node
-        node_2: destination node
-        weight_type: normal/elevation (by default NORMAL)
+        coordinates: latitude and longitude (geocoordinates)
 
     Returns:
-        Edge weight of the edge connecting node_1 and node_2
+        Address of the coordinates
     """
-    if weight_type == NORMAL:
-        try:
-            return graph.edges[node_1, node_2, 0][LENGTH]
-        except:
-            return graph.edges[node_1, node_2][WEIGHT]
-    elif weight_type == ELEVATION_GAIN:
-        return max(0.0, graph.nodes[node_2][ELEVATION] - graph.nodes[node_1][ELEVATION])
+    return Nominatim(user_agent="myGeocoder").reverse(geocoordinates).address
 
-def update_route_json(coordinates):
+
+def update_json_route(geocoordinates):
     """
-    This method updates the route json with the input values
+    This method is used to update the json route with the coordinates
 
     Args:
-        coordinates: input coordinates
+        coordinates: geocoordinates
 
     Returns:
-        An updated route json
+        Updated json route
     """
-    route_json = {PROPERTIES: {}, GEOMETRY: {}, TYPE: FEATURE}
-    route_json[GEOMETRY][TYPE] = LINESTRING
-    route_json[GEOMETRY][COORDINATES] = coordinates
-    return route_json
+    json_route = {PROPERTIES: {}, GEOMETRY: {}, TYPE: FEATURE}
+    json_route[GEOMETRY][COORDINATES] = geocoordinates
+    json_route[GEOMETRY][TYPE] = LINESTRING
+    return json_route
