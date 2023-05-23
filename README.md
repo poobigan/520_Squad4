@@ -11,6 +11,10 @@ The application allows runners and hikers to choose between simple and hard work
 * In the Command line interface Run : **pip3 install -r requirements.txt**
 * Make sure all the modules are installed properly and run the application from the root folder in the Chrome browser
 
+### Running the Application -
+* Execute ```run.sh``` to get the flask app started.
+* Open the browser and go to `http://127.0.0.1:5000/view`.
+
 ### Testing the Application -
 **We have added the all the unit test cases in src/test folder. Go to the src/test folder and run the test cases**
 

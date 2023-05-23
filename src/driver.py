@@ -67,7 +67,7 @@ def get_route():
 
     algorithm = json_out['algo']
     elevation_mode = json_out['minimum_maximum']
-    path_limit = float(json_out['percentage_limit'])
+    path_limit = float(json_out['limiting_percent'])
     origin_coordinates = json.loads(json_out['source_coordinates'])
     destination_coordinates = json.loads(json_out['destination_coordinates'])
     start_point = (origin_coordinates['lat'], origin_coordinates['lng'])
@@ -77,13 +77,13 @@ def get_route():
     view = View()
     data_model.set_observer_obj(view)
     controller = get_controller_obj(algorithm)
-    controller.set_percentage_limit(path_limit)
+    controller.set_limiting_percent(path_limit)
     controller.set_elevation_mode(elevation_mode)
-    controller.set_data_model(data_model)
-    controller.set_start_point(start_point)
-    controller.set_destination_point(destination_point)
-    controller.manipulate_data_model()
-    return view.get_json_output()
+    controller.set_model(data_model)
+    controller.set_origin(start_point)
+    controller.set_destination(destination_point)
+    controller.modify_model()
+    return view.fetch_json_output()
 
 
 def get_coordinates_from_address(address):
@@ -125,7 +125,7 @@ def get_routes():
     LOGGER.info(f"Destination: {destination_point}")
 
     algorithm = json_out['algo']
-    path_limit = float(json_out['percentage_limit'])
+    path_limit = float(json_out['limiting_percent'])
     elevation_strategy = json_out['minimum_maximum']
 
     data_model = Model()
@@ -134,7 +134,7 @@ def get_routes():
 
     controller = get_controller_obj(algorithm)
     controller.set_data_model(data_model)
-    controller.set_percentage_limit(path_limit)
+    controller.set_limiting_percent(path_limit)
     controller.set_elevation_mode(elevation_strategy)
     controller.set_start_point(start_point)
     controller.set_destination_point(destination_point)

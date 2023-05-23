@@ -21,7 +21,7 @@ class Model:
         self.observer_obj = None
         self.algo = None
         self.obj_algo = None
-        self.percentage_limit = None
+        self.limiting_percent = None
         self.elevation_mode = None
 
     def get_mapbox_api(self):
@@ -47,7 +47,7 @@ class Model:
     def set_obj_algo(self):
         self.obj_algo = self.algo(self.graph,
                                             self.info_least_dist_route.get_path_length(),
-                                            self.percentage_limit,
+                                            self.limiting_percent,
                                             self.elevation_mode,
                                             self.info_least_dist_route.get_start_point(),
                                             self.info_least_dist_route.get_end_point(),
@@ -60,17 +60,17 @@ class Model:
         LOGGER.info(f"Elevation Gain: {str(route.get_total_ele_gain())}")
         LOGGER.info("-")
 
-    def generate_routes(self, origin, destination, percentage_limit, elevation_mode):
+    def generate_routes(self, origin, destination, limiting_percent, elevation_mode):
         self.set_obj_least_dist_route(origin, destination)
         self.print_route_details(self.info_least_dist_route)
-        if percentage_limit == 0:
+        if limiting_percent == 0:
             self.observer_obj.update_notifier(self.info_least_dist_route,
                                           self.info_least_dist_route,
                                           get_address(origin),
                                           get_address(destination))
             return
         self.elevation_mode = elevation_mode
-        self.percentage_limit = percentage_limit / 100.0
+        self.limiting_percent = limiting_percent / 100.0
         
 
         self.set_obj_algo()

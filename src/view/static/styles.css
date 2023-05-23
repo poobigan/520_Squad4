@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
+
+body {
+    background-color: rgb(10, 10, 81);
+    color: rgb(246, 246, 246);
+}
+
+h2 {
+    text-align: center;
+    color: rgb(253, 253, 253);
+    font-family: 'Geneva', sans-serif;
+    margin-bottom: 0.5%;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+p {
+    display: inline;
+}
+
+#desti_manual{
+  margin-top: 10px;
+}
+
+#manualSourceAddress{
+  margin-left: 30px;
+}
+
+.manbutton{
+  border: none;
+  color: white;
+  padding: 10px 10px;
+  margin: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  border-radius: 8px;
+  background-color: #286dd4;
+  cursor: pointer;
+  font-family: 'Geneva', sans-serif;
+}
+
+.manbutton:hover {
+  background-color: #f1ede7;
+}
+
+.start {
+    height: 25%;
+}
+
+.end {
+    height:75%;
+}
+
+.buttons {
+  margin: auto;
+  width: 10%;
+}
+
+.row{
+    font-family: 'Geneva', sans-serif;
+    font-size: 13px;
+}
+.column {
+  padding-top: 0.5%;
+    float: left;
+    display: inline-block;
+}
+
+.column1{
+    width: 15%;
+    text-align: center;
+}
+
+.column2{
+    width: 85%;
+    text-align: center;
+}
+
+/* .column3, .column4{
+    width: 10%;
+    text-align: center;
+}
+
+.column5, .column6{
+    width: 20%;
+    line-height: 18px;
+    text-align: center;
+} */
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.head{
+    color: #286dd4;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.centering{
+    text-align: center;
+}
