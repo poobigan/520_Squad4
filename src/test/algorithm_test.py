@@ -46,7 +46,6 @@ class AlgorithmTestSuite(unittest.TestCase):
 
         """
         destination = (42.389747, -72.528293)
-        # graph_obj = GraphGenerator()
         graph_obj = GraphConstructor()
         graph_instance = graph_obj.generate_graph_to_end_point(destination)
         assert isinstance(graph_instance, nx.classes.multidigraph.MultiDiGraph)
@@ -111,8 +110,8 @@ class AlgorithmTestSuite(unittest.TestCase):
         Returns:
 
         """
-        destination = (42.3867637, -72.5322402)
-        start = (42.3978, -72.5147)
+        destination = (42.4068893,-72.5408023)
+        start = (42.3493904,-72.5325562)
         path_limit = 50
         elevation_strategy = 'min'
         controller = AstarController()
@@ -139,8 +138,8 @@ class AlgorithmTestSuite(unittest.TestCase):
         Returns:
 
         """
-        destination = (42.3867637, -72.5322402)
-        start = (42.3978, -72.5147)
+        destination = (42.4068893,-72.5408023)
+        start = (42.3493904,-72.5325562)
         path_limit = 50
         elevation_strategy = 'min'
         controller = DijkstraController()
@@ -167,8 +166,8 @@ class AlgorithmTestSuite(unittest.TestCase):
         Returns:
 
         """
-        start = (42.3867637, -72.5322402)
-        destination = (42.3978, -72.5147)
+        destination = (42.4068893,-72.5408023)
+        start = (42.3493904,-72.5325562)
         path_limit = 50
         elevation_strategy = 'max'
         controller = AstarController()
@@ -195,8 +194,8 @@ class AlgorithmTestSuite(unittest.TestCase):
         Returns:
 
         """
-        start = (42.3867637, -72.5322402)
-        destination = (42.3978, -72.5147)
+        destination = (42.4068893,-72.5408023)
+        start = (42.3493904,-72.5325562)
         path_limit = 50
         elevation_strategy = 'max'
         controller = DijkstraController()
